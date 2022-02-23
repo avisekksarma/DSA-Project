@@ -24,9 +24,9 @@ namespace GUI
             text.setString(value);
             text.setCharacterSize(30);
             circle.setPosition(pos.x, pos.y);
-            circle.setOrigin(circle.getRadius() / 2.0f, circle.getRadius() / 2.0f);
-            text.setPosition(circle.getPosition().x, circle.getPosition().y);
-            text.setOrigin(text.getGlobalBounds().width / 2.0f, text.getGlobalBounds().height / 2.0f);
+            circle.setOrigin(circle.getRadius(), circle.getRadius());
+            text.setPosition(circle.getPosition().x+7, circle.getPosition().y);
+            text.setOrigin(text.getGlobalBounds().width, text.getGlobalBounds().height);
             // find algorithm for putting this circle at a location
         }
 

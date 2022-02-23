@@ -26,11 +26,21 @@ int main()
                 {
                     if (addVertexBtn.checkIfBtnClicked(event.mouseButton.x, event.mouseButton.y))
                     {
-                        addVertexBtn.manageBtnState();
+                        if (!addEdgeBtn.drawNow)
+                        {
+                            addVertexBtn.manageBtnState();
+                        }
                     }
                     else if (addEdgeBtn.checkIfBtnClicked(event.mouseButton.x, event.mouseButton.y))
                     {
-                        addEdgeBtn.manageBtnState();
+                        if (!addVertexBtn.drawNow)
+                        {
+                            addEdgeBtn.manageBtnState();
+                            if (!addEdgeBtn.drawNow)
+                            {
+                                graph.clearEdgeVector();
+                            }
+                        }
                     }
                     else if (addVertexBtn.drawNow)
                     {
@@ -40,6 +50,7 @@ int main()
                     else if (addEdgeBtn.drawNow)
                     {
                         // TODO: draw edge later.
+                        graph.addEdge(sf::Vector2f(event.mouseButton.x, event.mouseButton.y));
                     }
                 }
             }

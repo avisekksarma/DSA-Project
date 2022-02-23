@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <list>
 #include <vector>
+#include <cmath>
 #include "gui-vertex.hpp"
 
 class Edge
@@ -32,7 +33,7 @@ public:
     Vertex(Context &c, const sf::Vector2f &pos) : guiVertex(c), edgeList(0)
     {
         this->id = count;
-        std::cout<<id<<" "<<count<<std::endl;
+        std::cout << id << " " << count << std::endl;
         guiVertex.create(char(id + 65), c.getAssets().font1, c, pos);
         count++;
     }
@@ -50,7 +51,7 @@ public:
     {
         id = index;
     }
-     GUI::Vertex &getGUIVertex()
+    GUI::Vertex &getGUIVertex()
     {
         return guiVertex;
     }
@@ -63,6 +64,8 @@ class Graph
     std::vector<Vertex> graph;
     int numOfVertices;
     Context &context;
+    // to store two vertices to draw edge
+    std::vector<int> vertexForEdge;
 
 private:
     bool isThisIndexValid(int index)
@@ -109,12 +112,25 @@ public:
         }
     }
     // adds a edge if that edge does not exist yet otherwise does nothing.
-    void addEdge(int end1, int end2, int weight = 1)
+    void addEdge(sf::Vector2f mousePos)
     {
-        if (isThisIndexValid(end1) and isThisIndexValid(end2) and !doesThisEdgeExist(end1, end2))
+        int weight = 1;
+        for (int i = 0; i < graph.size(); ++i)
         {
-            graph[end1].edgeList.push_back(Edge(end2, weight));
-            graph[end2].edgeList.push_back(Edge(end1, weight));
+            if (graph[i].getGUIVertex().getCircle().getGlobalBounds().contains(mousePos))
+            {
+                vertexForEdge.push_back(graph[i].getID());
+                break;
+            }
+        }
+        if (vertexForEdge.size() == 2)
+        {
+            if (!doesThisEdgeExist(vertexForEdge[0], vertexForEdge[1]))
+            {
+                graph[vertexForEdge[0]].edgeList.push_back(Edge(vertexForEdge[1], weight));
+                graph[vertexForEdge[1]].edgeList.push_back(Edge(vertexForEdge[0], weight));
+            }
+            vertexForEdge.clear();
         }
     }
     void printGraph()
@@ -135,11 +151,43 @@ public:
     {
         graph.push_back(Vertex(context, mousePos));
     }
-    void draw(sf::RenderWindow & window)
+    void draw(sf::RenderWindow &window)
     {
+        for (int i = 0; i < graph.size(); ++i)
+        {
+            auto it = graph[i].edgeList.begin();
+            for (; it != graph[i].edgeList.end(); ++it)
+            {
+                drawLine(graph[i].getGUIVertex().getCircle().getPosition(), graph[it->id].getGUIVertex().getCircle().getPosition(), window);
+            }
+        }
         for (int i = 0; i < graph.size(); ++i)
         {
             graph[i].getGUIVertex().draw(window);
         }
+    }
+    void drawLine(sf::Vector2f end1, sf::Vector2f end2, sf::RenderWindow &window)
+    {
+        // float length = sqrt(pow((end1.x - end2.x), 2) + pow((end1.y - end2.y), 2));
+        // sf::RectangleShape line(sf::Vector2f(length, 5.0f));
+        // line.setPosition(end1);
+        // // for angle finding
+        // float angle = (atan(fabs(end2.y - end1.y) / fabs(end2.x - end1.x)))*180/3.14;
+        // std::cout<<"Angle is:" <<angle<<std::endl;
+        // line.setRotation(90-angle);
+        auto rad = graph[0].getGUIVertex().getCircle().getRadius();
+        rad = 0;
+        sf::Vertex line[] =
+            {
+                sf::Vertex(sf::Vector2f(end1.x - rad, end1.y - rad)),
+                sf::Vertex(sf::Vector2f(end2.x - rad, end2.y - rad))};
+
+        window.draw(line, 2, sf::Lines);
+        // window.draw(line);
+    }
+    void clearEdgeVector()
+    {
+        // clears vertexForEdge
+        vertexForEdge.clear();
     }
 };

@@ -53,6 +53,7 @@ public:
             btn.setFillColor(sf::Color::White);
             text.setString(this->value);
             drawNow = false;
+            
         }
     }
 };
