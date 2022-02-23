@@ -348,6 +348,11 @@ CMakeFiles/DSA-Project.dir/main.cpp.o: main.cpp \
   /usr/include/c++/11.2.0/tr1/poly_hermite.tcc \
   /usr/include/c++/11.2.0/tr1/poly_laguerre.tcc \
   /usr/include/c++/11.2.0/tr1/riemann_zeta.tcc \
+  /usr/include/c++/11.2.0/stack \
+  /usr/include/c++/11.2.0/deque \
+  /usr/include/c++/11.2.0/bits/stl_deque.h \
+  /usr/include/c++/11.2.0/bits/deque.tcc \
+  /usr/include/c++/11.2.0/bits/stl_stack.h \
   include/gui-vertex.hpp \
   include/random.hpp \
   /usr/include/c++/11.2.0/random \
@@ -373,6 +378,14 @@ CMakeFiles/DSA-Project.dir/main.cpp.o: main.cpp \
 
 include/random.hpp:
 
+/usr/include/c++/11.2.0/bits/deque.tcc:
+
+/usr/include/c++/11.2.0/bits/stl_deque.h:
+
+/usr/include/c++/11.2.0/deque:
+
+/usr/include/c++/11.2.0/stack:
+
 /usr/include/c++/11.2.0/tr1/riemann_zeta.tcc:
 
 /usr/include/c++/11.2.0/tr1/poly_hermite.tcc:
@@ -392,6 +405,8 @@ include/random.hpp:
 /usr/include/c++/11.2.0/tr1/gamma.tcc:
 
 /usr/include/c++/11.2.0/bits/specfun.h:
+
+/usr/include/c++/11.2.0/bits/stl_stack.h:
 
 /usr/include/bits/mathcalls.h:
 

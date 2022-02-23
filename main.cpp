@@ -8,7 +8,8 @@ int main()
     Context context(sf::Vector2f(1000, 1000));
     // GUI::Vertex v1("0",context.getAssets().font1,context);
     Button addVertexBtn("Add Vertex", context, 100, 280);
-    Button addEdgeBtn("Add Edge", context, 100, 80);
+    Button addEdgeBtn("Add Edge", context, 100, 180);
+    Button clearBtn("Clear", context, 100, 80);
     sf::RenderWindow window(sf::VideoMode(context.getWinSize().x, context.getWinSize().y), "Graph Algorithms");
 
     Graph graph(context);
@@ -41,6 +42,8 @@ int main()
                                 graph.clearEdgeVector();
                             }
                         }
+                    }else if(clearBtn.checkIfBtnClicked(event.mouseButton.x,event.mouseButton.y)){
+                        graph.clear();
                     }
                     else if (addVertexBtn.drawNow)
                     {
@@ -59,6 +62,7 @@ int main()
         window.clear();
         addVertexBtn.draw(window);
         addEdgeBtn.draw(window);
+        clearBtn.draw(window);
         graph.draw(window);
         window.display();
     }

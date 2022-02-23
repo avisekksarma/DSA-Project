@@ -5,6 +5,7 @@
 #include <list>
 #include <vector>
 #include <cmath>
+#include <stack>
 #include "gui-vertex.hpp"
 
 class Edge
@@ -23,10 +24,10 @@ public:
 class Vertex
 {
     int id;
-    static int count;
     GUI::Vertex guiVertex;
 
 public:
+    static int count;
     std::list<Edge> edgeList;
 
 public:
@@ -62,7 +63,6 @@ int Vertex::count = 0;
 class Graph
 {
     std::vector<Vertex> graph;
-    int numOfVertices;
     Context &context;
     // to store two vertices to draw edge
     std::vector<int> vertexForEdge;
@@ -85,17 +85,8 @@ private:
     }
 
 public:
-    Graph(Context &c, int numOfVertices = 0) : context(c)
+    Graph(Context &c) : context(c)
     {
-        this->numOfVertices = numOfVertices;
-        // graph.resize(numOfVertices);
-        if (numOfVertices != 0)
-        {
-            for (int i = 0; i < numOfVertices; i++)
-            {
-                graph[i].setID(i);
-            }
-        }
     }
     bool isVertexAdjacent(int source, int checkVertex)
     {
@@ -189,5 +180,14 @@ public:
     {
         // clears vertexForEdge
         vertexForEdge.clear();
+    }
+    void clear()
+    {
+        graph.clear();
+        vertexForEdge.clear();
+        Vertex::count = 0;
+    }
+    void BFS()
+    {
     }
 };

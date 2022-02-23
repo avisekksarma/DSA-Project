@@ -349,6 +349,11 @@ CMakeFiles/DSA-Project.dir/main.cpp.o
  /usr/include/c++/11.2.0/tr1/poly_hermite.tcc
  /usr/include/c++/11.2.0/tr1/poly_laguerre.tcc
  /usr/include/c++/11.2.0/tr1/riemann_zeta.tcc
+ /usr/include/c++/11.2.0/stack
+ /usr/include/c++/11.2.0/deque
+ /usr/include/c++/11.2.0/bits/stl_deque.h
+ /usr/include/c++/11.2.0/bits/deque.tcc
+ /usr/include/c++/11.2.0/bits/stl_stack.h
  /run/media/abhishek/523e4673-631e-4290-8946-5b2f9a9cc817/project-dsa/DSA-Project/include/gui-vertex.hpp
  /run/media/abhishek/523e4673-631e-4290-8946-5b2f9a9cc817/project-dsa/DSA-Project/include/random.hpp
  /usr/include/c++/11.2.0/random
