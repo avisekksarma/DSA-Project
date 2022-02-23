@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <list>
 #include <vector>
+#include "gui-vertex.hpp"
 
 class Edge
 {
@@ -22,20 +23,23 @@ class Vertex
 {
     int id;
     static int count;
+    GUI::Vertex guiVertex;
 
 public:
     std::list<Edge> edgeList;
 
 public:
-    Vertex() : edgeList(0)
+    Vertex(Context &c, const sf::Vector2f &pos) : guiVertex(c), edgeList(0)
     {
         this->id = count;
+        std::cout<<id<<" "<<count<<std::endl;
+        guiVertex.create(char(id + 65), c.getAssets().font1, c, pos);
         count++;
     }
-    ~Vertex()
-    {
-        count--;
-    }
+    // ~Vertex()
+    // {
+    //     count--;
+    // }
     //getters
     int getID() const
     {
@@ -46,6 +50,10 @@ public:
     {
         id = index;
     }
+     GUI::Vertex &getGUIVertex()
+    {
+        return guiVertex;
+    }
 };
 int Vertex::count = 0;
 
@@ -54,6 +62,7 @@ class Graph
 {
     std::vector<Vertex> graph;
     int numOfVertices;
+    Context &context;
 
 private:
     bool isThisIndexValid(int index)
@@ -73,10 +82,10 @@ private:
     }
 
 public:
-    Graph(int numOfVertices = 0)
+    Graph(Context &c, int numOfVertices = 0) : context(c)
     {
         this->numOfVertices = numOfVertices;
-        graph.resize(numOfVertices);
+        // graph.resize(numOfVertices);
         if (numOfVertices != 0)
         {
             for (int i = 0; i < numOfVertices; i++)
@@ -118,8 +127,19 @@ public:
             {
                 std::cout << "(" << j->id << " [" << j->weight << "] )   ";
             }
-            std::cout<<std::endl;
+            std::cout << std::endl;
+        }
+    }
+
+    void addVertex(sf::Vector2f mousePos)
+    {
+        graph.push_back(Vertex(context, mousePos));
+    }
+    void draw(sf::RenderWindow & window)
+    {
+        for (int i = 0; i < graph.size(); ++i)
+        {
+            graph[i].getGUIVertex().draw(window);
         }
     }
 };
-
