@@ -9,11 +9,15 @@ class Context
     Assets assets;
 
 public:
+    int gridLength = 1000;
     Context(const sf::Vector2f winSize)
     {
         mWindowSize = winSize;
     }
     const sf::Vector2f & getWinSize() const {
         return mWindowSize;
+    }
+    const Assets& getAssets() const {
+        return assets;
     }
 };

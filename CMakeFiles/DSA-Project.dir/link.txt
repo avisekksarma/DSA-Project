@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/DSA-Project.dir/main.cpp.o -o DSA-Project  -g -lsfml-network -lsfml-audio -lsfml-graphics -lsfml-window -lsfml-system 
