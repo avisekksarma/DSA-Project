@@ -365,8 +365,19 @@ CMakeFiles/DSA-Project.dir/main.cpp.o: main.cpp \
   /usr/include/c++/11.2.0/pstl/glue_numeric_defs.h \
   /usr/include/c++/11.2.0/cassert \
   /usr/include/assert.h \
-  include/entities.hpp
+  /usr/include/c++/11.2.0/queue \
+  /usr/include/c++/11.2.0/bits/stl_queue.h \
+  include/entities.hpp \
+  include/mainmenu.hpp \
+  include/bfs-dfs-Traversal.hpp \
+  /usr/include/c++/11.2.0/thread \
+  /usr/include/c++/11.2.0/bits/std_thread.h \
+  /usr/include/c++/11.2.0/bits/this_thread_sleep.h
 
+
+include/bfs-dfs-Traversal.hpp:
+
+/usr/include/c++/11.2.0/queue:
 
 /usr/include/c++/11.2.0/cassert:
 
@@ -375,6 +386,8 @@ CMakeFiles/DSA-Project.dir/main.cpp.o: main.cpp \
 /usr/include/c++/11.2.0/numeric:
 
 /usr/include/c++/11.2.0/bits/random.h:
+
+/usr/include/c++/11.2.0/thread:
 
 include/random.hpp:
 
@@ -399,6 +412,8 @@ include/random.hpp:
 /usr/include/c++/11.2.0/tr1/beta_function.tcc:
 
 /usr/include/c++/11.2.0/tr1/bessel_function.tcc:
+
+/usr/include/c++/11.2.0/bits/stl_queue.h:
 
 /usr/include/c++/11.2.0/tr1/special_function_util.h:
 
@@ -570,11 +585,15 @@ include/context.hpp:
 
 /usr/include/c++/11.2.0/x86_64-pc-linux-gnu/bits/gthr-default.h:
 
+include/mainmenu.hpp:
+
 /usr/include/SFML/System/Sleep.hpp:
 
 /usr/include/ctype.h:
 
 /usr/include/c++/11.2.0/x86_64-pc-linux-gnu/bits/atomic_word.h:
+
+/usr/include/c++/11.2.0/bits/this_thread_sleep.h:
 
 /usr/include/c++/11.2.0/bits/localefwd.h:
 
@@ -1015,6 +1034,8 @@ include/gui-vertex.hpp:
 /usr/include/c++/11.2.0/bits/basic_ios.h:
 
 /usr/include/c++/11.2.0/bits/hashtable_policy.h:
+
+/usr/include/c++/11.2.0/bits/std_thread.h:
 
 /usr/include/bits/types/wint_t.h:
 

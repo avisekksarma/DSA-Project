@@ -30,7 +30,7 @@ namespace GUI
             // find algorithm for putting this circle at a location
         }
 
-        const sf::CircleShape &getCircle() const
+        sf::CircleShape &getCircle()
         {
             return circle;
         }

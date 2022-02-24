@@ -13,11 +13,12 @@ class Button
 
 public:
     bool drawNow = false;
-    Button(std::string value, Context &c, int xFactor, int yFactor) : context(c)
+    Button(Context &c) : context(c) {}
+    void create(std::string value,int xFactor, int yFactor)
     {
         this->value = value;
         text.setString(value);
-        text.setFont(c.getAssets().font1);
+        text.setFont(context.getAssets().font1);
         text.setCharacterSize(20);
         text.setFillColor(sf::Color::Red);
         text.setPosition(context.getWinSize().x - xFactor, context.getWinSize().y - yFactor);
@@ -26,6 +27,7 @@ public:
         btn.setOrigin(btn.getSize().x / 2.0f, btn.getSize().y / 2.0f);
         text.setOrigin(text.getGlobalBounds().width / 2.0f, text.getGlobalBounds().height / 2.0f);
     }
+    
     void draw(sf::RenderWindow &window)
     {
         window.draw(btn);
@@ -53,7 +55,6 @@ public:
             btn.setFillColor(sf::Color::White);
             text.setString(this->value);
             drawNow = false;
-            
         }
     }
 };

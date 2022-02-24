@@ -7,6 +7,8 @@
 #include <cmath>
 #include <stack>
 #include "gui-vertex.hpp"
+#include <queue>
+// #include "bfs-dfs-Traversal.hpp"
 
 class Edge
 {
@@ -62,46 +64,72 @@ int Vertex::count = 0;
 // this is undirected graph
 class Graph
 {
+private:
     std::vector<Vertex> graph;
     Context &context;
     // to store two vertices to draw edge
     std::vector<int> vertexForEdge;
 
+    std::vector<bool> isVisited;
+
+public:
+    std::queue<int> queue;
+    std::stack<int> stack;
+
 private:
-    bool isThisIndexValid(int index)
+    bool isThisIDValid(int ID)
     {
-        return index >= 0 and index < graph.size();
+        for (int i = 0; i < graph.size(); ++i)
+        {
+            if (graph[i].getID() == ID)
+            {
+                return true;
+            }
+        }
+        return false;
     }
-    bool doesThisEdgeExist(int end1, int end2)
+    bool doesThisEdgeExist(int end1ID, int end2ID)
     {
         // make sure you call this function in valid end1, end2 values.
-        auto i = graph[end1].edgeList.begin();
-        for (; i != graph[end1].edgeList.end(); i++)
+        auto i = graph[getIndexFromID(end1ID)].edgeList.begin();
+        for (; i != graph[getIndexFromID(end1ID)].edgeList.end(); i++)
         {
-            if (i->id == end2)
+            if (i->id == end2ID)
                 return true;
         }
         return false;
+    }
+    int getIndexFromID(int ID)
+    {
+        for (int i = 0; i < graph.size(); ++i)
+        {
+            if (graph[i].getID() == ID)
+            {
+                return i;
+            }
+        }
+        return -1;
     }
 
 public:
     Graph(Context &c) : context(c)
     {
     }
-    bool isVertexAdjacent(int source, int checkVertex)
-    {
-        // index of say vertices A and B are given, i need to say if they are adjacent i.e. connected.
-        if (isThisIndexValid(source) and isThisIndexValid(checkVertex))
-        {
-            auto it = graph[source].edgeList.begin();
-            for (; it != graph[source].edgeList.end(); ++it)
-            {
-                if (it->id == checkVertex)
-                    return true;
-            }
-            return false;
-        }
-    }
+    // TODO: manage index and ID confusion here.
+    // bool isVertexAdjacent(int source, int checkVertex)
+    // {
+    //     // index of say vertices A and B are given, i need to say if they are adjacent i.e. connected.
+    //     if (isThisIDValid(source) and isThisIDValid(checkVertex))
+    //     {
+    //         auto it = graph[source].edgeList.begin();
+    //         for (; it != graph[source].edgeList.end(); ++it)
+    //         {
+    //             if (it->id == checkVertex)
+    //                 return true;
+    //         }
+    //         return false;
+    //     }
+    // }
     // adds a edge if that edge does not exist yet otherwise does nothing.
     void addEdge(sf::Vector2f mousePos)
     {
@@ -116,10 +144,13 @@ public:
         }
         if (vertexForEdge.size() == 2)
         {
-            if (!doesThisEdgeExist(vertexForEdge[0], vertexForEdge[1]))
+            if (vertexForEdge[0] != vertexForEdge[1])
             {
-                graph[vertexForEdge[0]].edgeList.push_back(Edge(vertexForEdge[1], weight));
-                graph[vertexForEdge[1]].edgeList.push_back(Edge(vertexForEdge[0], weight));
+                if (!doesThisEdgeExist(vertexForEdge[0], vertexForEdge[1]))
+                {
+                    graph[getIndexFromID(vertexForEdge[0])].edgeList.push_back(Edge(vertexForEdge[1], weight));
+                    graph[getIndexFromID(vertexForEdge[1])].edgeList.push_back(Edge(vertexForEdge[0], weight));
+                }
             }
             vertexForEdge.clear();
         }
@@ -149,7 +180,7 @@ public:
             auto it = graph[i].edgeList.begin();
             for (; it != graph[i].edgeList.end(); ++it)
             {
-                drawLine(graph[i].getGUIVertex().getCircle().getPosition(), graph[it->id].getGUIVertex().getCircle().getPosition(), window);
+                drawLine(graph[i].getGUIVertex().getCircle().getPosition(), graph[getIndexFromID(it->id)].getGUIVertex().getCircle().getPosition(), window);
             }
         }
         for (int i = 0; i < graph.size(); ++i)
@@ -166,12 +197,12 @@ public:
         // float angle = (atan(fabs(end2.y - end1.y) / fabs(end2.x - end1.x)))*180/3.14;
         // std::cout<<"Angle is:" <<angle<<std::endl;
         // line.setRotation(90-angle);
-        auto rad = graph[0].getGUIVertex().getCircle().getRadius();
-        rad = 0;
+        // auto rad = graph[0].getGUIVertex().getCircle().getRadius();
+        // rad = 0;
         sf::Vertex line[] =
             {
-                sf::Vertex(sf::Vector2f(end1.x - rad, end1.y - rad)),
-                sf::Vertex(sf::Vector2f(end2.x - rad, end2.y - rad))};
+                sf::Vertex(sf::Vector2f(end1.x, end1.y)),
+                sf::Vertex(sf::Vector2f(end2.x, end2.y))};
 
         window.draw(line, 2, sf::Lines);
         // window.draw(line);
@@ -184,10 +215,78 @@ public:
     void clear()
     {
         graph.clear();
+        while (!queue.empty())
+        {
+            queue.pop();
+        }
+        while (!stack.empty())
+        {
+            stack.pop();
+        }
+        isVisited.clear();
         vertexForEdge.clear();
         Vertex::count = 0;
     }
-    void BFS()
+    void BFS(bool isFirstNode = false)
     {
+        std::cout << "BFS start" << std::endl;
+        if (isFirstNode)
+        {
+            // first initialization
+            queue.push(graph[0].getID());
+            isVisited.resize(graph.size(), false);
+            isVisited[0] = true;
+        }
+
+        int x = queue.front();
+        queue.pop();
+        std::cout << x << std::endl;
+        int currIndex = getIndexFromID(x);
+        graph[currIndex].getGUIVertex().getCircle().setFillColor(sf::Color::Cyan);
+        auto it = graph[currIndex].edgeList.begin();
+        for (; it != graph[currIndex].edgeList.end(); ++it)
+        {
+            if (!isVisited[getIndexFromID(it->id)])
+            {
+                isVisited[getIndexFromID(it->id)] = true;
+                queue.push(it->id);
+            }
+        }
+    }
+
+    void DFS(bool isFirstNode = false)
+    {
+        std::cout << "DFS start" << std::endl;
+        if (isFirstNode)
+        {
+            stack.push(graph[0].getID());
+            isVisited.resize(graph.size(), false);
+            isVisited[0] = true;
+            graph[0].getGUIVertex().getCircle().setFillColor(sf::Color::Cyan);
+        }
+        int x = stack.top();
+
+        int currIndex = getIndexFromID(x);
+        auto it = graph[currIndex].edgeList.begin();
+        bool isBreak = false;
+        for (; it != graph[currIndex].edgeList.end(); ++it)
+        {
+            if (!isVisited[getIndexFromID(it->id)])
+            {
+                isVisited[getIndexFromID(it->id)] = true;
+                stack.push(it->id);
+                std::cout << it->id << std::endl;
+                graph[getIndexFromID(it->id)].getGUIVertex().getCircle().setFillColor(sf::Color::Cyan);
+                isBreak = true;
+                break;
+            }
+        }
+        if (!isBreak)
+        {
+            stack.pop();
+        }
+        // if (graph.size() - 1 == getIndexFromID(it->id))
+        // {
+        // }
     }
 };
