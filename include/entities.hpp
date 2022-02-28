@@ -42,12 +42,12 @@ public:
         else
             return false;
     }
-    void manageBtnState()
+    void manageBtnState(std::string label = "Stop")
     {
         if (!isActive)
         {
             btn.setFillColor(sf::Color::Cyan);
-            text.setString("Stop");
+            text.setString(label);
             isActive = true;
         }
         else

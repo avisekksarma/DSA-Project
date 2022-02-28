@@ -12,8 +12,10 @@ public:
     int gridLength = 1000;
     Context(const sf::Vector2f winSize)
     {
+        sf::ContextSettings settings;
+        settings.antialiasingLevel = 8;
         mWindowSize = winSize;
-        window.create(sf::VideoMode(mWindowSize.x, mWindowSize.y), "Graph Algorithms");
+        window.create(sf::VideoMode(mWindowSize.x, mWindowSize.y), "Graph Algorithms", sf::Style::Default,settings);
     }
     const sf::Vector2f &getWinSize() const
     {

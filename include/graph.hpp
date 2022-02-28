@@ -170,6 +170,21 @@ public:
         }
     }
 
+    std::vector<Vertex>& getGraph()
+    {
+      return graph;
+    }
+
+    void resetAnimation()
+    {
+      for(int i=0;i<graph.size();++i)
+      {
+        graph[i].getGUIVertex().getCircle().setFillColor(sf::Color::Green);
+        isVisited[i] = false;
+      }
+
+    }
+
     void addVertex(sf::Vector2f mousePos)
     {
         graph.push_back(Vertex(context, mousePos));
@@ -191,24 +206,47 @@ public:
     }
     void drawLine(sf::Vector2f end1, sf::Vector2f end2, sf::RenderWindow &window)
     {
-        /* float length = sqrt(pow((end1.x - end2.x), 2) + pow((end1.y - end2.y), 2)); */
-        /* sf::RectangleShape line(sf::Vector2f(length, 5.0f)); */
-        /* line.setPosition(end1); */
-        /* // for angle finding */
-        /* float angle = (atan((end2.x - end1.x) / (end2.y - end1.y)))*180/3.14; */
-        /* std::cout<<"Angle is:" <<angle<<std::endl; */
-        /* line.setRotation(90+angle); */
-        /* auto rad = graph[0].getGUIVertex().getCircle().getRadius(); */
+        float length = sqrt(pow((end1.x - end2.x), 2) + pow((end1.y - end2.y), 2));
+        sf::RectangleShape line(sf::Vector2f(length, 2.0f));
+        line.setPosition(end1);
+        // for angle finding
+        float angle = (atan(fabs(end2.y - end1.y) / fabs(end2.x - end1.x)))*180/3.1415926;
+
+        if((end2.x-end1.x)<=0)
+        {
+          if((end2.y-end1.y)>0)
+          {
+            angle = angle + (180-2*angle);
+          }
+          else if((end2.y-end1.y)<0)
+          {
+            angle = angle + (180);
+          }
+          else 
+          {
+            angle = -180;
+          }
+        }
+        else
+        {
+          if((end2.y-end1.y)<0)
+          {
+            angle = -angle;
+          }
+        }
+        std::cout<<"Angle is:" <<angle<<std::endl;
+        line.setRotation(angle);
+        auto rad = graph[0].getGUIVertex().getCircle().getRadius();
         
 
 
 
-        sf::Vertex line[] =
-            {
-                sf::Vertex(sf::Vector2f(end1.x, end1.y)),
-                sf::Vertex(sf::Vector2f(end2.x, end2.y))};
-        window.draw(line, 2, sf::Lines);
-        // window.draw(line);
+        /* sf::Vertex line[] = */
+        /*     { */
+        /*         sf::Vertex(sf::Vector2f(end1.x, end1.y)), */
+        /*         sf::Vertex(sf::Vector2f(end2.x, end2.y))}; */
+        /* window.draw(line, 2, sf::Lines); */
+        window.draw(line);
     }
     void clearEdgeVector()
     {
@@ -230,15 +268,29 @@ public:
         vertexForEdge.clear();
         Vertex::count = 0;
     }
-    void BFS(bool isFirstNode = false)
+
+    int containsVertex(sf::Vector2f pos)
+    {
+      int id = -1;
+      for(int i=0; i<graph.size();i++)
+      {
+        if(graph[i].getGUIVertex().getCircle().getGlobalBounds().contains(pos))
+        {
+          id = graph[i].getID();
+          return id;
+        }
+      }
+      return id;
+    }
+    void BFS(bool isFirstNode = false, int id=0)
     {
         std::cout << "BFS start" << std::endl;
         if (isFirstNode)
         {
             // first initialization
-            queue.push(graph[0].getID());
+            queue.push(id);
             isVisited.resize(graph.size(), false);
-            isVisited[0] = true;
+            isVisited[getIndexFromID(id)] = true;
         }
 
         int x = queue.front();
@@ -257,15 +309,15 @@ public:
         }
     }
 
-    void DFS(bool isFirstNode = false)
+    void DFS(bool isFirstNode = false, int id =0)
     {
         std::cout << "DFS start" << std::endl;
         if (isFirstNode)
         {
-            stack.push(graph[0].getID());
+            stack.push(id);
             isVisited.resize(graph.size(), false);
-            isVisited[0] = true;
-            graph[0].getGUIVertex().getCircle().setFillColor(sf::Color::Cyan);
+            isVisited[getIndexFromID(id)] = true;
+            graph[getIndexFromID(id)].getGUIVertex().getCircle().setFillColor(sf::Color::Cyan);
         }
         int x = stack.top();
 
