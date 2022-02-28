@@ -12,9 +12,9 @@ class Button
     std::string value;
 
 public:
-    bool drawNow = false;
+    bool isActive = false;
     Button(Context &c) : context(c) {}
-    void create(std::string value,int xFactor, int yFactor)
+    void create(std::string value, int xFactor, int yFactor)
     {
         this->value = value;
         text.setString(value);
@@ -27,7 +27,7 @@ public:
         btn.setOrigin(btn.getSize().x / 2.0f, btn.getSize().y / 2.0f);
         text.setOrigin(text.getGlobalBounds().width / 2.0f, text.getGlobalBounds().height / 2.0f);
     }
-    
+
     void draw(sf::RenderWindow &window)
     {
         window.draw(btn);
@@ -44,17 +44,17 @@ public:
     }
     void manageBtnState()
     {
-        if (!drawNow)
+        if (!isActive)
         {
             btn.setFillColor(sf::Color::Cyan);
             text.setString("Stop");
-            drawNow = true;
+            isActive = true;
         }
         else
         {
             btn.setFillColor(sf::Color::White);
             text.setString(this->value);
-            drawNow = false;
+            isActive = false;
         }
     }
 };
