@@ -8,6 +8,7 @@
 #include <stack>
 #include "gui-vertex.hpp"
 #include <queue>
+#include <SFML/Graphics/Shape.hpp>
 // #include "bfs-dfs-Traversal.hpp"
 
 class Edge
@@ -190,20 +191,22 @@ public:
     }
     void drawLine(sf::Vector2f end1, sf::Vector2f end2, sf::RenderWindow &window)
     {
-        // float length = sqrt(pow((end1.x - end2.x), 2) + pow((end1.y - end2.y), 2));
-        // sf::RectangleShape line(sf::Vector2f(length, 5.0f));
-        // line.setPosition(end1);
-        // // for angle finding
-        // float angle = (atan(fabs(end2.y - end1.y) / fabs(end2.x - end1.x)))*180/3.14;
-        // std::cout<<"Angle is:" <<angle<<std::endl;
-        // line.setRotation(90-angle);
-        // auto rad = graph[0].getGUIVertex().getCircle().getRadius();
-        // rad = 0;
+        /* float length = sqrt(pow((end1.x - end2.x), 2) + pow((end1.y - end2.y), 2)); */
+        /* sf::RectangleShape line(sf::Vector2f(length, 5.0f)); */
+        /* line.setPosition(end1); */
+        /* // for angle finding */
+        /* float angle = (atan((end2.x - end1.x) / (end2.y - end1.y)))*180/3.14; */
+        /* std::cout<<"Angle is:" <<angle<<std::endl; */
+        /* line.setRotation(90+angle); */
+        /* auto rad = graph[0].getGUIVertex().getCircle().getRadius(); */
+        
+
+
+
         sf::Vertex line[] =
             {
                 sf::Vertex(sf::Vector2f(end1.x, end1.y)),
                 sf::Vertex(sf::Vector2f(end2.x, end2.y))};
-
         window.draw(line, 2, sf::Lines);
         // window.draw(line);
     }
@@ -242,7 +245,7 @@ public:
         queue.pop();
         std::cout << x << std::endl;
         int currIndex = getIndexFromID(x);
-        graph[currIndex].getGUIVertex().getCircle().setFillColor(sf::Color::Cyan);
+        graph[currIndex].getGUIVertex().getCircle().setFillColor(sf::Color::Blue);
         auto it = graph[currIndex].edgeList.begin();
         for (; it != graph[currIndex].edgeList.end(); ++it)
         {

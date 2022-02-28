@@ -139,7 +139,6 @@ namespace Screen
             while (context.window.isOpen())
             {
                 sf::Event event;
-                processEvents(event);
                 if (isBFSAnimation)
                 {
                     using namespace std::chrono_literals;
@@ -158,6 +157,7 @@ namespace Screen
                     else
                         isDFSAnimation = false;
                 }
+                processEvents(event);
                 renderWindow();
             }
         }
