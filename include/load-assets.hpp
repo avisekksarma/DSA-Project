@@ -9,7 +9,7 @@ class Assets{
     Assets(){
         // auto x = std::filesystem::current_path();
         // std::cout<<x.string()<<std::endl;
-        if(!font1.loadFromFile("./assets/fonts/OpenSans-Italic.ttf")){
+        if(!font1.loadFromFile("./assets/fonts/OpenSans.ttf")){
             std::cerr<<"Error: could not load font1"<<std::endl;
         }
     }

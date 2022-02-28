@@ -11,6 +11,7 @@ class Button
     Context &context;
     std::string value;
 
+
 public:
     bool isActive = false;
     Button(Context &c) : context(c) {}
@@ -33,6 +34,7 @@ public:
         window.draw(btn);
         window.draw(text);
     }
+    
     bool checkIfBtnClicked(int posX, int posY)
     {
         if (btn.getGlobalBounds().contains(posX, posY))

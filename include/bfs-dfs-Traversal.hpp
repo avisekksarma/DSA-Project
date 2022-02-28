@@ -20,6 +20,7 @@ namespace Screen
         Button bfsBtn;
         Button dfsBtn;
         Button pauseBtn;
+        sf::Text visited_node_order;
         Graph graph;
 
         enum class IsActive
@@ -93,6 +94,7 @@ namespace Screen
                                 {
                                   graph.resetAnimation();
                                   isBFSAnimation = false;
+                                  visited_node_order.setString("");
                                 }
                                 bfsBtn.manageBtnState();
                                 if (bfsBtn.isActive)
@@ -109,6 +111,7 @@ namespace Screen
                                 {
                                   graph.resetAnimation();
                                   isDFSAnimation= false;
+                                  visited_node_order.setString("");
                                 }
                                 dfsBtn.manageBtnState();
                                 if (dfsBtn.isActive)
@@ -145,7 +148,7 @@ namespace Screen
                                 id = graph.containsVertex(sf::Vector2f(event.mouseButton.x, event.mouseButton.y));
                                 if(id>=0)
                                 {
-                                  graph.BFS(true,id);
+                                  graph.BFS(visited_node_order,true,id);
                                   isBFSAnimation = true;
                                 }
                         }
@@ -155,7 +158,7 @@ namespace Screen
                                 id = graph.containsVertex(sf::Vector2f(event.mouseButton.x, event.mouseButton.y));
                                 if(id>=0)
                                 {
-                                  graph.DFS(true,id);
+                                  graph.DFS(visited_node_order,true,id);
                                   isDFSAnimation= true;
                                 }
                         }
@@ -178,6 +181,12 @@ namespace Screen
             bfsBtn.create("Animate BFS", 100, 180);
             dfsBtn.create("Animate DFS", 100, 80);
             pauseBtn.create("Pause",100,580);
+            visited_node_order.setFont(context.getAssets().font1);
+            visited_node_order.setFillColor(sf::Color::White);
+            visited_node_order.setString("");
+            visited_node_order.setPosition(100 , context.getWinSize().y-100);
+            
+
         }
         void run()
         {
@@ -189,7 +198,7 @@ namespace Screen
                     using namespace std::chrono_literals;
                     std::this_thread::sleep_for(700ms);
                     if (!graph.queue.empty())
-                        graph.BFS(false);
+                        graph.BFS(visited_node_order,false);
                     else
                         isBFSAnimation = false;
                 }
@@ -198,7 +207,7 @@ namespace Screen
                     using namespace std::chrono_literals;
                     std::this_thread::sleep_for(700ms);
                     if (!graph.stack.empty())
-                        graph.DFS(false);
+                        graph.DFS(visited_node_order,false);
                     else
                         isDFSAnimation = false;
                 }
@@ -218,7 +227,15 @@ namespace Screen
             clearBtn.draw(context.window);
             bfsBtn.draw(context.window);
             dfsBtn.draw(context.window);
-            graph.draw(context.window);
+            context.window.draw(visited_node_order);
+            if(isBFSAnimation || isDFSAnimation)
+            {
+              graph.draw(context.window,true);
+            }
+            else
+            {
+              graph.draw(context.window,false);
+            }
             context.window.display();
         }
     };
