@@ -153,6 +153,54 @@ main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/DSA-Project.dir/build.make CMakeFiles/DSA-Project.dir/main.cpp.s
 .PHONY : main.cpp.s
 
+source/graph.o: source/graph.cpp.o
+.PHONY : source/graph.o
+
+# target to build an object file
+source/graph.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DSA-Project.dir/build.make CMakeFiles/DSA-Project.dir/source/graph.cpp.o
+.PHONY : source/graph.cpp.o
+
+source/graph.i: source/graph.cpp.i
+.PHONY : source/graph.i
+
+# target to preprocess a source file
+source/graph.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DSA-Project.dir/build.make CMakeFiles/DSA-Project.dir/source/graph.cpp.i
+.PHONY : source/graph.cpp.i
+
+source/graph.s: source/graph.cpp.s
+.PHONY : source/graph.s
+
+# target to generate assembly for a file
+source/graph.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DSA-Project.dir/build.make CMakeFiles/DSA-Project.dir/source/graph.cpp.s
+.PHONY : source/graph.cpp.s
+
+source/mainmenu.o: source/mainmenu.cpp.o
+.PHONY : source/mainmenu.o
+
+# target to build an object file
+source/mainmenu.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DSA-Project.dir/build.make CMakeFiles/DSA-Project.dir/source/mainmenu.cpp.o
+.PHONY : source/mainmenu.cpp.o
+
+source/mainmenu.i: source/mainmenu.cpp.i
+.PHONY : source/mainmenu.i
+
+# target to preprocess a source file
+source/mainmenu.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DSA-Project.dir/build.make CMakeFiles/DSA-Project.dir/source/mainmenu.cpp.i
+.PHONY : source/mainmenu.cpp.i
+
+source/mainmenu.s: source/mainmenu.cpp.s
+.PHONY : source/mainmenu.s
+
+# target to generate assembly for a file
+source/mainmenu.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DSA-Project.dir/build.make CMakeFiles/DSA-Project.dir/source/mainmenu.cpp.s
+.PHONY : source/mainmenu.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -165,6 +213,12 @@ help:
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
+	@echo "... source/graph.o"
+	@echo "... source/graph.i"
+	@echo "... source/graph.s"
+	@echo "... source/mainmenu.o"
+	@echo "... source/mainmenu.i"
+	@echo "... source/mainmenu.s"
 .PHONY : help
 
 

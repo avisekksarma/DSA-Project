@@ -9,7 +9,6 @@ class Context
     Assets assets;
 public:
     sf::RenderWindow window;
-    int gridLength = 1000;
     Context(const sf::Vector2f winSize)
     {
         sf::ContextSettings settings;

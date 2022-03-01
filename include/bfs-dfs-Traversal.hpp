@@ -89,10 +89,10 @@ namespace Screen
                         {
                             if (activeBtn == IsActive::None or activeBtn == IsActive::bfsBtn)
                             {
-                                if(bfsBtn.isActive)
+                                if (bfsBtn.isActive)
                                 {
-                                  graph.resetAnimation();
-                                  isBFSAnimation = false;
+                                    graph.resetAnimation();
+                                    isBFSAnimation = false;
                                 }
                                 bfsBtn.manageBtnState();
                                 if (bfsBtn.isActive)
@@ -105,10 +105,10 @@ namespace Screen
                         {
                             if (activeBtn == IsActive::None or activeBtn == IsActive::dfsBtn)
                             {
-                                if(dfsBtn.isActive)
+                                if (dfsBtn.isActive)
                                 {
-                                  graph.resetAnimation();
-                                  isDFSAnimation= false;
+                                    graph.resetAnimation();
+                                    isDFSAnimation = false;
                                 }
                                 dfsBtn.manageBtnState();
                                 if (dfsBtn.isActive)
@@ -119,20 +119,23 @@ namespace Screen
                         }
                         else if (pauseBtn.checkIfBtnClicked(event.mouseButton.x, event.mouseButton.y))
                         {
-                                pauseBtn.manageBtnState("Resume");
-                                if(pauseBtn.isActive)
+                            pauseBtn.manageBtnState("Resume");
+                            if (pauseBtn.isActive)
+                            {
+                                isDFSAnimation = false;
+                                isBFSAnimation = false;
+                            }
+                            else
+                            {
+                                if (bfsBtn.isActive)
                                 {
-                                  isDFSAnimation = false;
-                                  isBFSAnimation = false;
+                                    isBFSAnimation = true;
                                 }
                                 else
                                 {
-                                  if(bfsBtn.isActive)
-                                  {
-                                    isBFSAnimation = true;
-                                  }
-                                  else{ isDFSAnimation = true;}
+                                    isDFSAnimation = true;
                                 }
+                            }
                         }
                         else if (addVertexBtn.isActive)
                         {
@@ -141,23 +144,23 @@ namespace Screen
                         }
                         else if (bfsBtn.isActive)
                         {
-                                int id;
-                                id = graph.containsVertex(sf::Vector2f(event.mouseButton.x, event.mouseButton.y));
-                                if(id>=0)
-                                {
-                                  graph.BFS(true,id);
-                                  isBFSAnimation = true;
-                                }
+                            int id;
+                            id = graph.containsVertex(sf::Vector2f(event.mouseButton.x, event.mouseButton.y));
+                            if (id >= 0)
+                            {
+                                graph.BFS(true, id);
+                                isBFSAnimation = true;
+                            }
                         }
                         else if (dfsBtn.isActive)
                         {
-                                int id;
-                                id = graph.containsVertex(sf::Vector2f(event.mouseButton.x, event.mouseButton.y));
-                                if(id>=0)
-                                {
-                                  graph.DFS(true,id);
-                                  isDFSAnimation= true;
-                                }
+                            int id;
+                            id = graph.containsVertex(sf::Vector2f(event.mouseButton.x, event.mouseButton.y));
+                            if (id >= 0)
+                            {
+                                graph.DFS(true, id);
+                                isDFSAnimation = true;
+                            }
                         }
                         else if (addEdgeBtn.isActive)
                         {
@@ -170,14 +173,14 @@ namespace Screen
         }
 
     public:
-        Traversal(Context &c) : context(c),pauseBtn(c), addVertexBtn(c), addEdgeBtn(c), clearBtn(c), graph(c), bfsBtn(c), dfsBtn(c)
+        Traversal(Context &c) : context(c), pauseBtn(c), addVertexBtn(c), addEdgeBtn(c), clearBtn(c), graph(c), bfsBtn(c), dfsBtn(c)
         {
             addVertexBtn.create("Add Vertex", 100, 480);
             addEdgeBtn.create("Add Edge", 100, 380);
             clearBtn.create("Clear", 100, 280);
             bfsBtn.create("Animate BFS", 100, 180);
             dfsBtn.create("Animate DFS", 100, 80);
-            pauseBtn.create("Pause",100,580);
+            pauseBtn.create("Pause", 100, 580);
         }
         void run()
         {
@@ -209,16 +212,16 @@ namespace Screen
         void renderWindow()
         {
             context.window.clear();
-            if(isBFSAnimation || isDFSAnimation || pauseBtn.isActive)
+            if (isBFSAnimation || isDFSAnimation || pauseBtn.isActive)
             {
-              pauseBtn.draw(context.window);
+                pauseBtn.draw(context.window);
             }
             addVertexBtn.draw(context.window);
             addEdgeBtn.draw(context.window);
             clearBtn.draw(context.window);
             bfsBtn.draw(context.window);
             dfsBtn.draw(context.window);
-            graph.draw(context.window);
+            graph.draw(context.window, false, false);
             context.window.display();
         }
     };

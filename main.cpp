@@ -6,7 +6,8 @@
 
 int main()
 {
-    Context context(sf::Vector2f(1000, 736));
+    // Context context(sf::Vector2f(1000, 736));
+    Context context(sf::Vector2f(1000,1000));
     // GUI::Vertex v1("0",context.getAssets().font1,context);
     // Graph graph(context);
     MainMenu menu(context);
