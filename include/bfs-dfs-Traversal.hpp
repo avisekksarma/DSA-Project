@@ -217,7 +217,7 @@ namespace Screen
             bfsBtn.create("Animate BFS", 100, 180);
             dfsBtn.create("Animate DFS", 100, 80);
             pauseBtn.create("Pause",100,580);
-            deleteBtn.create("Delete",100,580);
+            /* deleteBtn.create("Delete",100,580); */
             visited_node_order.setFont(context.getAssets().font1);
             visited_node_order.setFillColor(sf::Color::White);
             visited_node_order.setString("");
