@@ -18,6 +18,11 @@ void MainMenu::init()
 {
     bfsDfsBtn.create("Traversal", context.getWinSize().x / 2.0f, context.getWinSize().y / 2.0f);
     dijkstraBtn.create("Dijkstra", context.getWinSize().x / 2.0f, context.getWinSize().y / 2.0f - 100);
+    headingTexture.loadFromFile("./assets/image/title.png");
+    headingSprite.setTexture(headingTexture);
+    headingSprite.setPosition(context.getWinSize().x / 2.f, 100);
+    headingSprite.setOrigin(headingSprite.getGlobalBounds().width / 2.f, headingSprite.getGlobalBounds().height / 2.f);
+    headingSprite.setScale(0.75f, 0.75f);
 }
 void MainMenu::processEvents(sf::Event &event)
 {
@@ -45,8 +50,9 @@ void MainMenu::processEvents(sf::Event &event)
 }
 void MainMenu::renderWindow()
 {
-    context.window.clear();
+    context.window.clear(sf::Color{0x16191EFF});
     bfsDfsBtn.draw(context.window);
+    context.window.draw(headingSprite);
     dijkstraBtn.draw(context.window);
     // graph.draw(context.window);
     context.window.display();

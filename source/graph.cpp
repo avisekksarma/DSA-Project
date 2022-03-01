@@ -147,8 +147,9 @@ void Graph::resetAnimation()
 {
     for (int i = 0; i < graph.size(); ++i)
     {
-        graph[i].getGUIVertex().getCircle().setFillColor(sf::Color::Green);
+        graph[i].getGUIVertex().getCircle().setFillColor(sf::Color{0x14632EFF});
         isVisited[i] = false;
+        visited_node_list.clear();
     }
 }
 void Graph::resetAnimation(bool isDijkstra)
@@ -158,8 +159,39 @@ void Graph::resetAnimation(bool isDijkstra)
 
 void Graph::addVertex(sf::Vector2f mousePos)
 {
-    graph.push_back(Vertex(context, mousePos));
+    if (!containIntheRange(mousePos))
+    {
+        graph.push_back(Vertex(context, mousePos));
+    }
 }
+
+void draw(sf::RenderWindow &window, bool isAnimation)
+{
+    sf::Color col = sf::Color::White;
+    for (int i = 0; i < graph.size(); ++i)
+    {
+        auto it = graph[i].edgeList.begin();
+        for (; it != graph[i].edgeList.end(); ++it)
+        {
+
+            if (isAnimation && isVisited[i] && isVisited[getIndexFromID(it->id)])
+            {
+                col = sf::Color::Red;
+            }
+            else
+            {
+                col = sf::Color::White;
+            }
+
+            drawLine(graph[i].getGUIVertex().getCircle().getPosition(), graph[getIndexFromID(it->id)].getGUIVertex().getCircle().getPosition(), window, col);
+        }
+    }
+    for (int i = 0; i < graph.size(); ++i)
+    {
+        graph[i].getGUIVertex().draw(window);
+    }
+}
+
 void Graph::draw(sf::RenderWindow &window, bool drawWeight, bool isDijkstra)
 {
     for (int i = 0; i < graph.size(); ++i)
@@ -184,11 +216,14 @@ void Graph::draw(sf::RenderWindow &window, bool drawWeight, bool isDijkstra)
         window.draw(graph[i].shortestVal);
     }
 }
-void Graph::drawLine(sf::Vector2f end1, sf::Vector2f end2, sf::RenderWindow &window)
+
+void drawLine(sf::Vector2f end1, sf::Vector2f end2, sf::RenderWindow &window, sf::Color col)
 {
     float length = sqrt(pow((end1.x - end2.x), 2) + pow((end1.y - end2.y), 2));
     sf::RectangleShape line(sf::Vector2f(length, 2.0f));
     line.setPosition(end1);
+    line.setFillColor(col);
+    line.setOutlineColor(col);
     // for angle finding
     float angle = (atan(fabs(end2.y - end1.y) / fabs(end2.x - end1.x))) * 180 / 3.1415926;
 
@@ -224,6 +259,7 @@ void Graph::drawLine(sf::Vector2f end1, sf::Vector2f end2, sf::RenderWindow &win
     /* window.draw(line, 2, sf::Lines); */
     window.draw(line);
 }
+
 void Graph::clearEdgeVector()
 {
     // clears vertexForEdge
@@ -258,7 +294,7 @@ int Graph::containsVertex(sf::Vector2f pos)
     }
     return id;
 }
-void Graph::BFS(bool isFirstNode, int id)
+void Graph::BFS(sf::Text &visited_node_order, bool isFirstNode = false, int id = 0)
 {
     std::cout << "BFS start" << std::endl;
     if (isFirstNode)
@@ -266,6 +302,8 @@ void Graph::BFS(bool isFirstNode, int id)
         // first initialization
         queue.push(id);
         isVisited.resize(graph.size(), false);
+        visited_node_list.push_back((char)(graph[getIndexFromID(id)].getID() + 65));
+        visited_node_order.setString(visited_node_list);
         isVisited[getIndexFromID(id)] = true;
     }
 
@@ -274,18 +312,41 @@ void Graph::BFS(bool isFirstNode, int id)
     std::cout << x << std::endl;
     int currIndex = getIndexFromID(x);
     graph[currIndex].getGUIVertex().getCircle().setFillColor(sf::Color::Blue);
+    if (!isVisited[currIndex])
+    {
+        visited_node_list.push_back((char)(graph[currIndex].getID() + 65));
+        visited_node_order.setString(visited_node_list);
+    }
+    isVisited[currIndex] = true;
+    std::cout << visited_node_list << std::endl;
     auto it = graph[currIndex].edgeList.begin();
     for (; it != graph[currIndex].edgeList.end(); ++it)
     {
         if (!isVisited[getIndexFromID(it->id)])
         {
-            isVisited[getIndexFromID(it->id)] = true;
             queue.push(it->id);
         }
     }
 }
 
-void Graph::DFS(bool isFirstNode, int id)
+bool Graph::containIntheRange(sf::Vector2f mousePos)
+{
+    float dist, radi;
+
+    for (int i = 0; i < graph.size(); i++)
+    {
+        sf::Vector2f center = graph[i].getGUIVertex().getCircle().getPosition();
+        dist = sqrt(pow((mousePos.x - center.x), 2) + pow((mousePos.y - center.y), 2));
+        radi = graph[i].getGUIVertex().getCircle().getRadius();
+        if (dist < 2 * (radi + 2))
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+void Graph::DFS(sf::Text &visited_node_order, bool isFirstNode = false, int id = 0)
 {
     std::cout << "DFS start" << std::endl;
     if (isFirstNode)
@@ -293,33 +354,77 @@ void Graph::DFS(bool isFirstNode, int id)
         stack.push(id);
         isVisited.resize(graph.size(), false);
         isVisited[getIndexFromID(id)] = true;
-        graph[getIndexFromID(id)].getGUIVertex().getCircle().setFillColor(sf::Color::Cyan);
+        graph[getIndexFromID(id)].getGUIVertex().getCircle().setFillColor(sf::Color{0x00AAAAFF});
+        visited_node_list.push_back((char)(graph[id].getID() + 65));
+        visited_node_order.setString(visited_node_list);
+        return;
     }
-    int x = stack.top();
-
-    int currIndex = getIndexFromID(x);
-    auto it = graph[currIndex].edgeList.begin();
     bool isBreak = false;
-    for (; it != graph[currIndex].edgeList.end(); ++it)
+
+    do
     {
-        if (!isVisited[getIndexFromID(it->id)])
+        isBreak = false;
+        int x = stack.top();
+
+        int currIndex = getIndexFromID(x);
+        auto it = graph[currIndex].edgeList.begin();
+        for (; it != graph[currIndex].edgeList.end(); ++it)
         {
-            isVisited[getIndexFromID(it->id)] = true;
-            stack.push(it->id);
-            std::cout << it->id << std::endl;
-            graph[getIndexFromID(it->id)].getGUIVertex().getCircle().setFillColor(sf::Color::Cyan);
-            isBreak = true;
-            break;
+            if (!isVisited[getIndexFromID(it->id)])
+            {
+                if (!isVisited[it->id])
+                {
+                    visited_node_list.push_back((char)(graph[it->id].getID() + 65));
+                    visited_node_order.setString(visited_node_list);
+                }
+                isVisited[getIndexFromID(it->id)] = true;
+                stack.push(it->id);
+                std::cout << it->id << std::endl;
+                graph[getIndexFromID(it->id)].getGUIVertex().getCircle().setFillColor(sf::Color{0x00AAAAFF});
+                isBreak = true;
+                break;
+            }
         }
-    }
-    if (!isBreak)
-    {
-        stack.pop();
-    }
+        if (!isBreak)
+        {
+            stack.pop();
+        }
+
+    } while (!isBreak && !stack.empty());
     // if (graph.size() - 1 == getIndexFromID(it->id))
     // {
     // }
 }
+
+void Graph::deleteVertex(sf::Vector2f mousePos)
+{
+    int id = -1;
+    for (int i = 0; i < graph.size(); i++)
+    {
+        if (graph[i].getGUIVertex().getCircle().getGlobalBounds().contains(mousePos))
+        {
+            id = graph[i].getID();
+            std::cout << " broken " << std::endl;
+            std::cout << id << std::endl;
+            break;
+        }
+    }
+
+    for (int i = 0; i < graph.size(); i++)
+    {
+        auto it = graph[i].edgeList.begin();
+        for (; it != graph[i].edgeList.end(); ++it)
+        {
+            if (it->id == id)
+            {
+                graph[i].edgeList.erase(it);
+                break;
+            }
+        }
+    }
+    /* auto garg = remove(graph.begin(),graph.end(),graph[getIndexFromID(id)]); */
+}
+
 void printArray(const std::vector<int> &array)
 {
     for (int i = 0; i < array.size(); ++i)

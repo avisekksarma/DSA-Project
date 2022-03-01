@@ -20,6 +20,8 @@ namespace Screen
         Button bfsBtn;
         Button dfsBtn;
         Button pauseBtn;
+        Button deleteBtn;
+        sf::Text visited_node_order;
         Graph graph;
 
         enum class IsActive
@@ -29,7 +31,8 @@ namespace Screen
             addEdgeBtn,
             bfsBtn,
             dfsBtn,
-            pauseBtn
+            pauseBtn,
+            deleteBtn
         };
         IsActive activeBtn = IsActive::None;
         bool isBFSAnimation = false;
@@ -76,6 +79,17 @@ namespace Screen
                                     activeBtn = IsActive::None;
                             }
                         }
+                        else if (deleteBtn.checkIfBtnClicked(event.mouseButton.x, event.mouseButton.y))
+                        {
+                            if (activeBtn == IsActive::None or activeBtn == IsActive::deleteBtn)
+                            {
+                                deleteBtn.manageBtnState();
+                                if (deleteBtn.isActive)
+                                    activeBtn = IsActive::deleteBtn;
+                                else
+                                    activeBtn = IsActive::None;
+                            }
+                        }
                         else if (clearBtn.checkIfBtnClicked(event.mouseButton.x, event.mouseButton.y))
                         {
                             if (activeBtn == IsActive::None)
@@ -91,8 +105,11 @@ namespace Screen
                             {
                                 if (bfsBtn.isActive)
                                 {
-                                    graph.resetAnimation();
-                                    isBFSAnimation = false;
+
+                                  graph.resetAnimation();
+                                  isBFSAnimation = false;
+                                  visited_node_order.setString("");
+
                                 }
                                 bfsBtn.manageBtnState();
                                 if (bfsBtn.isActive)
@@ -107,8 +124,9 @@ namespace Screen
                             {
                                 if (dfsBtn.isActive)
                                 {
-                                    graph.resetAnimation();
-                                    isDFSAnimation = false;
+                                  graph.resetAnimation();
+                                  isDFSAnimation= false;
+                                  visited_node_order.setString("");
                                 }
                                 dfsBtn.manageBtnState();
                                 if (dfsBtn.isActive)
@@ -144,28 +162,32 @@ namespace Screen
                         }
                         else if (bfsBtn.isActive)
                         {
-                            int id;
-                            id = graph.containsVertex(sf::Vector2f(event.mouseButton.x, event.mouseButton.y));
-                            if (id >= 0)
-                            {
-                                graph.BFS(true, id);
-                                isBFSAnimation = true;
-                            }
+                                int id;
+                                id = graph.containsVertex(sf::Vector2f(event.mouseButton.x, event.mouseButton.y));
+                                if(id>=0)
+                                {
+                                  graph.BFS(visited_node_order,true,id);
+                                  isBFSAnimation = true;
+                                }
                         }
                         else if (dfsBtn.isActive)
                         {
-                            int id;
-                            id = graph.containsVertex(sf::Vector2f(event.mouseButton.x, event.mouseButton.y));
-                            if (id >= 0)
-                            {
-                                graph.DFS(true, id);
-                                isDFSAnimation = true;
-                            }
+                                int id;
+                                id = graph.containsVertex(sf::Vector2f(event.mouseButton.x, event.mouseButton.y));
+                                if(id>=0)
+                                {
+                                  graph.DFS(visited_node_order,true,id);
+                                  isDFSAnimation= true;
+                                }
                         }
                         else if (addEdgeBtn.isActive)
                         {
                             // TODO: draw edge later.
                             graph.addEdge(sf::Vector2f(event.mouseButton.x, event.mouseButton.y));
+                        }
+                        else if(deleteBtn.isActive)
+                        {
+                            graph.deleteVertex(sf::Vector2f(event.mouseButton.x, event.mouseButton.y));
                         }
                     }
                 }
@@ -173,14 +195,19 @@ namespace Screen
         }
 
     public:
-        Traversal(Context &c) : context(c), pauseBtn(c), addVertexBtn(c), addEdgeBtn(c), clearBtn(c), graph(c), bfsBtn(c), dfsBtn(c)
+        Traversal(Context &c) : context(c),deleteBtn(c),pauseBtn(c), addVertexBtn(c), addEdgeBtn(c), clearBtn(c), graph(c), bfsBtn(c), dfsBtn(c)
         {
             addVertexBtn.create("Add Vertex", 100, 480);
             addEdgeBtn.create("Add Edge", 100, 380);
             clearBtn.create("Clear", 100, 280);
             bfsBtn.create("Animate BFS", 100, 180);
             dfsBtn.create("Animate DFS", 100, 80);
-            pauseBtn.create("Pause", 100, 580);
+            pauseBtn.create("Pause",100,580);
+            deleteBtn.create("Delete",100,580);
+            visited_node_order.setFont(context.getAssets().font1);
+            visited_node_order.setFillColor(sf::Color::White);
+            visited_node_order.setString("");
+            visited_node_order.setPosition(100 , context.getWinSize().y-100);
         }
         void run()
         {
@@ -192,7 +219,7 @@ namespace Screen
                     using namespace std::chrono_literals;
                     std::this_thread::sleep_for(700ms);
                     if (!graph.queue.empty())
-                        graph.BFS(false);
+                        graph.BFS(visited_node_order,false);
                     else
                         isBFSAnimation = false;
                 }
@@ -201,7 +228,7 @@ namespace Screen
                     using namespace std::chrono_literals;
                     std::this_thread::sleep_for(700ms);
                     if (!graph.stack.empty())
-                        graph.DFS(false);
+                        graph.DFS(visited_node_order,false);
                     else
                         isDFSAnimation = false;
                 }
@@ -211,17 +238,26 @@ namespace Screen
         }
         void renderWindow()
         {
-            context.window.clear();
-            if (isBFSAnimation || isDFSAnimation || pauseBtn.isActive)
+            context.window.clear(sf::Color{0x16191EFF});
+            if(isBFSAnimation || isDFSAnimation || pauseBtn.isActive)
             {
                 pauseBtn.draw(context.window);
             }
             addVertexBtn.draw(context.window);
+            deleteBtn.draw(context.window);
             addEdgeBtn.draw(context.window);
             clearBtn.draw(context.window);
             bfsBtn.draw(context.window);
             dfsBtn.draw(context.window);
-            graph.draw(context.window, false, false);
+            context.window.draw(visited_node_order);
+            if(isBFSAnimation || isDFSAnimation)
+            {
+              graph.draw(context.window,true);
+            }
+            else
+            {
+              graph.draw(context.window,false);
+            }
             context.window.display();
         }
     };

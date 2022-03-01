@@ -10,6 +10,8 @@ class MainMenu
     Context &context;
     Button bfsDfsBtn;
     Button dijkstraBtn;
+    sf::Sprite headingSprite;
+    sf::Texture headingTexture;
 
 public:
     MainMenu(Context &c);
