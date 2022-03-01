@@ -8,6 +8,8 @@ class MainMenu
 {
     Context &context;
     Button bfs_dfs;
+    sf::Sprite headingSprite;
+    sf::Texture headingTexture;
 
 public:
     MainMenu(Context &c) : context(c), bfs_dfs(c)
@@ -29,6 +31,11 @@ private:
     void init()
     {
         bfs_dfs.create("Traversal", context.getWinSize().x / 2.0f, context.getWinSize().y / 2.0f);
+        headingTexture.loadFromFile("./assets/image/title.png");
+        headingSprite.setTexture(headingTexture);
+        headingSprite.setPosition(context.getWinSize().x/2.f,100);
+        headingSprite.setOrigin(headingSprite.getGlobalBounds().width/2.f,headingSprite.getGlobalBounds().height/2.f);
+        headingSprite.setScale(0.75f,0.75f);
     }
     void processEvents(sf::Event &event)
     {
@@ -51,8 +58,9 @@ private:
     }
     void renderWindow()
     {
-        context.window.clear();
+        context.window.clear(sf::Color{0x16191EFF});
         bfs_dfs.draw(context.window);
+        context.window.draw(headingSprite);
         // graph.draw(context.window);
         context.window.display();
     }

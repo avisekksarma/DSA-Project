@@ -41,10 +41,9 @@ public:
         guiVertex.create(char(id + 65), c.getAssets().font1, c, pos);
         count++;
     }
-    // ~Vertex()
-    // {
-    //     count--;
-    // }
+     ~Vertex()
+     {
+     }
     //getters
     int getID() const
     {
@@ -180,7 +179,7 @@ public:
     {
       for(int i=0;i<graph.size();++i)
       {
-        graph[i].getGUIVertex().getCircle().setFillColor(sf::Color::Green);
+        graph[i].getGUIVertex().getCircle().setFillColor(sf::Color{0x14632EFF});
         isVisited[i] = false;
         visited_node_list.clear();
       }
@@ -212,8 +211,34 @@ public:
       }
     }
 
+    void deleteVertex(sf::Vector2f mousePos)
+    {
+      int id=-1;
+      for(int i=0;i<graph.size();i++)
+      {
+        if(graph[i].getGUIVertex().getCircle().getGlobalBounds().contains(mousePos))
+        {
+          id = graph[i].getID();
+          std::cout << " broken "<<std::endl;
+          std::cout << id<<std::endl;
+          break;
+        }
+      }
 
-
+      for(int i=0;i<graph.size();i++)
+      {
+        auto it = graph[i].edgeList.begin();
+        for (; it != graph[i].edgeList.end(); ++it)
+        {
+            if (it->id == id)
+            {
+              graph[i].edgeList.erase(it);
+                 break;
+            }
+        }
+      }
+      /* auto garg = remove(graph.begin(),graph.end(),graph[getIndexFromID(id)]); */
+    }
 
     void draw(sf::RenderWindow &window, bool isAnimation)
     {
@@ -364,37 +389,43 @@ public:
             stack.push(id);
             isVisited.resize(graph.size(), false);
             isVisited[getIndexFromID(id)] = true;
-            graph[getIndexFromID(id)].getGUIVertex().getCircle().setFillColor(sf::Color::Cyan);
+            graph[getIndexFromID(id)].getGUIVertex().getCircle().setFillColor(sf::Color{0x00AAAAFF});
             visited_node_list.push_back((char)(graph[id].getID()+65));
             visited_node_order.setString(visited_node_list);
             return;
         }
-        int x = stack.top();
+          bool isBreak = false;
 
-        int currIndex = getIndexFromID(x);
-        auto it = graph[currIndex].edgeList.begin();
-        bool isBreak = false;
-        for (; it != graph[currIndex].edgeList.end(); ++it)
+        do
         {
-            if (!isVisited[getIndexFromID(it->id)])
-            {
-                if(!isVisited[it->id])
-                {
-                  visited_node_list.push_back((char)(graph[it->id].getID()+65));
-                  visited_node_order.setString(visited_node_list);
-                }
-                isVisited[getIndexFromID(it->id)] = true;
-                stack.push(it->id);
-                std::cout << it->id << std::endl;
-                graph[getIndexFromID(it->id)].getGUIVertex().getCircle().setFillColor(sf::Color::Cyan);
-                isBreak = true;
-                break;
-            }
-        }
-        if (!isBreak)
-        {
-            stack.pop();
-        }
+            isBreak = false;
+            int x = stack.top();
+
+          int currIndex = getIndexFromID(x);
+          auto it = graph[currIndex].edgeList.begin();
+          for (; it != graph[currIndex].edgeList.end(); ++it)
+          {
+              if (!isVisited[getIndexFromID(it->id)])
+              {
+                  if(!isVisited[it->id])
+                  {
+                    visited_node_list.push_back((char)(graph[it->id].getID()+65));
+                    visited_node_order.setString(visited_node_list);
+                  }
+                  isVisited[getIndexFromID(it->id)] = true;
+                  stack.push(it->id);
+                  std::cout << it->id << std::endl;
+                  graph[getIndexFromID(it->id)].getGUIVertex().getCircle().setFillColor(sf::Color{0x00AAAAFF});
+                  isBreak = true;
+                  break;
+              }
+          }
+          if (!isBreak)
+          {
+              stack.pop();
+          }
+
+        }while(!isBreak && !stack.empty());
         // if (graph.size() - 1 == getIndexFromID(it->id))
         // {
         // }

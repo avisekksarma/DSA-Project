@@ -21,11 +21,12 @@ public:
         text.setString(value);
         text.setFont(context.getAssets().font1);
         text.setCharacterSize(20);
-        text.setFillColor(sf::Color::Red);
+        text.setFillColor(sf::Color::White);
         text.setPosition(context.getWinSize().x - xFactor, context.getWinSize().y - yFactor);
         btn.setSize(sf::Vector2f(150, 80));
         btn.setPosition(context.getWinSize().x - xFactor, context.getWinSize().y - yFactor);
         btn.setOrigin(btn.getSize().x / 2.0f, btn.getSize().y / 2.0f);
+        btn.setFillColor(sf::Color{0xB98D74FF});
         text.setOrigin(text.getGlobalBounds().width / 2.0f, text.getGlobalBounds().height / 2.0f);
     }
 
@@ -48,13 +49,13 @@ public:
     {
         if (!isActive)
         {
-            btn.setFillColor(sf::Color::Cyan);
+            btn.setFillColor(sf::Color{0xB54756FF});
             text.setString(label);
             isActive = true;
         }
         else
         {
-            btn.setFillColor(sf::Color::White);
+            btn.setFillColor(sf::Color{0xB98D74FF});
             text.setString(this->value);
             isActive = false;
         }

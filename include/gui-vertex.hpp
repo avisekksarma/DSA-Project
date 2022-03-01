@@ -18,9 +18,9 @@ namespace GUI
         void create(char value, const sf::Font &font, Context &c, sf::Vector2f pos, float radius = 30)
         {
             circle.setRadius(radius);
-            circle.setFillColor(sf::Color::Green);
+            circle.setFillColor(sf::Color{0x14632EFF});
             text.setFont(font);
-            text.setFillColor(sf::Color::Red);
+            text.setFillColor(sf::Color::White);
             text.setString(value);
             text.setCharacterSize(30);
             circle.setPosition(pos.x, pos.y);
@@ -29,7 +29,6 @@ namespace GUI
             text.setOrigin(text.getGlobalBounds().width, text.getGlobalBounds().height);
             // find algorithm for putting this circle at a location
         }
-
         sf::CircleShape &getCircle()
         {
             return circle;

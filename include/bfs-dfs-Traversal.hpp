@@ -20,6 +20,7 @@ namespace Screen
         Button bfsBtn;
         Button dfsBtn;
         Button pauseBtn;
+        Button deleteBtn;
         sf::Text visited_node_order;
         Graph graph;
 
@@ -30,7 +31,8 @@ namespace Screen
             addEdgeBtn,
             bfsBtn,
             dfsBtn,
-            pauseBtn
+            pauseBtn,
+            deleteBtn
         };
         IsActive activeBtn = IsActive::None;
         bool isBFSAnimation = false;
@@ -73,6 +75,17 @@ namespace Screen
                                 addEdgeBtn.manageBtnState();
                                 if (addEdgeBtn.isActive)
                                     activeBtn = IsActive::addEdgeBtn;
+                                else
+                                    activeBtn = IsActive::None;
+                            }
+                        }
+                        else if (deleteBtn.checkIfBtnClicked(event.mouseButton.x, event.mouseButton.y))
+                        {
+                            if (activeBtn == IsActive::None or activeBtn == IsActive::deleteBtn)
+                            {
+                                deleteBtn.manageBtnState();
+                                if (deleteBtn.isActive)
+                                    activeBtn = IsActive::deleteBtn;
                                 else
                                     activeBtn = IsActive::None;
                             }
@@ -167,13 +180,17 @@ namespace Screen
                             // TODO: draw edge later.
                             graph.addEdge(sf::Vector2f(event.mouseButton.x, event.mouseButton.y));
                         }
+                        else if(deleteBtn.isActive)
+                        {
+                            graph.deleteVertex(sf::Vector2f(event.mouseButton.x, event.mouseButton.y));
+                        }
                     }
                 }
             }
         }
 
     public:
-        Traversal(Context &c) : context(c),pauseBtn(c), addVertexBtn(c), addEdgeBtn(c), clearBtn(c), graph(c), bfsBtn(c), dfsBtn(c)
+        Traversal(Context &c) : context(c),deleteBtn(c),pauseBtn(c), addVertexBtn(c), addEdgeBtn(c), clearBtn(c), graph(c), bfsBtn(c), dfsBtn(c)
         {
             addVertexBtn.create("Add Vertex", 100, 480);
             addEdgeBtn.create("Add Edge", 100, 380);
@@ -181,12 +198,11 @@ namespace Screen
             bfsBtn.create("Animate BFS", 100, 180);
             dfsBtn.create("Animate DFS", 100, 80);
             pauseBtn.create("Pause",100,580);
+            deleteBtn.create("Delete",100,580);
             visited_node_order.setFont(context.getAssets().font1);
             visited_node_order.setFillColor(sf::Color::White);
             visited_node_order.setString("");
             visited_node_order.setPosition(100 , context.getWinSize().y-100);
-            
-
         }
         void run()
         {
@@ -217,12 +233,13 @@ namespace Screen
         }
         void renderWindow()
         {
-            context.window.clear();
+            context.window.clear(sf::Color{0x16191EFF});
             if(isBFSAnimation || isDFSAnimation || pauseBtn.isActive)
             {
               pauseBtn.draw(context.window);
             }
             addVertexBtn.draw(context.window);
+            deleteBtn.draw(context.window);
             addEdgeBtn.draw(context.window);
             clearBtn.draw(context.window);
             bfsBtn.draw(context.window);
