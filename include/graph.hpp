@@ -16,6 +16,7 @@ class Edge
 public:
   int weight; // for weighted graph
   int id;
+  sf::CircleShape weightTextCircle;
   sf::Text weightText;
 
   Edge();

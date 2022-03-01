@@ -7,11 +7,16 @@ Edge::Edge(Context &c, int id, int weight)
 {
     this->id = id;
     this->weight = weight;
+    weightTextCircle.setRadius(18);
+    // weightTextCircle.setPosition(pos.x, pos.y);
+    weightTextCircle.setOrigin(weightTextCircle.getRadius(), weightTextCircle.getRadius());
+    weightTextCircle.setFillColor(sf::Color{0x16191EFF});
     weightText.setFont(c.getAssets().font1);
     weightText.setString(std::to_string(weight));
-    weightText.setCharacterSize(30);
+    weightText.setCharacterSize(20);
     weightText.setFillColor(sf::Color::Green);
     weightText.setLetterSpacing(1.2);
+    weightText.setOrigin(weightText.getGlobalBounds().width / 2.0f, weightText.getGlobalBounds().height / 2.0f);
     // position will be set later when drawing line.
 }
 
@@ -239,8 +244,10 @@ void Graph::draw(sf::RenderWindow &window, bool drawWeight, bool isDijkstra, boo
             }
             if (drawWeight)
             {
-                it->weightText.setPosition((end1.x + end2.x) / 2.0f + 20, (end1.y + end2.y) / 2.0f);
+                it->weightTextCircle.setPosition((end1.x + end2.x) / 2.0f, (end1.y + end2.y) / 2.0f);
+                it->weightText.setPosition(it->weightTextCircle.getPosition().x, it->weightTextCircle.getPosition().y);
                 it->weightText.setOrigin(it->weightText.getGlobalBounds().width / 2.0f, it->weightText.getGlobalBounds().height / 2.0f);
+                context.window.draw(it->weightTextCircle);
                 context.window.draw(it->weightText);
             }
         }
