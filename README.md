@@ -16,7 +16,7 @@ $ rm -rf build
 $ cmake CMakeLists.txt -B build
 $ cd build
 $ make
-$ ./BoardGames
+$ ./DSA-Project
 ```
 
 Note for future versions:
