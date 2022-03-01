@@ -1,3 +1,0 @@
-/run/media/abhishek/523e4673-631e-4290-8946-5b2f9a9cc817/project-dsa/DSA-Project/CMakeFiles/DSA-Project.dir
-/run/media/abhishek/523e4673-631e-4290-8946-5b2f9a9cc817/project-dsa/DSA-Project/CMakeFiles/edit_cache.dir
-/run/media/abhishek/523e4673-631e-4290-8946-5b2f9a9cc817/project-dsa/DSA-Project/CMakeFiles/rebuild_cache.dir
