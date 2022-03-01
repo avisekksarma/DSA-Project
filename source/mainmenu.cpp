@@ -1,6 +1,6 @@
 #include "../include/mainmenu.hpp"
 
-MainMenu::MainMenu(Context &c) : context(c), bfsDfsBtn(c), dijkstraBtn(c)
+MainMenu::MainMenu(Context &c) : context(c),exitBtn(c), bfsDfsBtn(c), dijkstraBtn(c)
 {
     init();
 }
@@ -18,6 +18,7 @@ void MainMenu::init()
 {
     bfsDfsBtn.create("Traversal", context.getWinSize().x / 2.0f, context.getWinSize().y / 2.0f);
     dijkstraBtn.create("Dijkstra", context.getWinSize().x / 2.0f, context.getWinSize().y / 2.0f - 100);
+    exitBtn.create("Exit", context.getWinSize().x / 2.0f, context.getWinSize().y / 2.0f - 200);
     headingTexture.loadFromFile("./assets/image/title.png");
     headingSprite.setTexture(headingTexture);
     headingSprite.setPosition(context.getWinSize().x / 2.f, 100);
@@ -44,6 +45,10 @@ void MainMenu::processEvents(sf::Event &event)
                     Screen::DijkstraTraversal dijkstraTraversal(context);
                     dijkstraTraversal.run();
                 }
+                else if(exitBtn.checkIfBtnClicked(event.mouseButton.x, event.mouseButton.y))
+                {
+                    context.window.close();
+                }
             }
         }
     }
@@ -54,6 +59,7 @@ void MainMenu::renderWindow()
     bfsDfsBtn.draw(context.window);
     context.window.draw(headingSprite);
     dijkstraBtn.draw(context.window);
+    exitBtn.draw(context.window);
     // graph.draw(context.window);
     context.window.display();
 }

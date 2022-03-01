@@ -6,6 +6,7 @@
 #include "graph.hpp"
 #include <chrono>
 #include <thread>
+#include "backButton.hpp"
 
 namespace Screen
 {
@@ -19,6 +20,7 @@ namespace Screen
         Button clearBtn;
         Button animateBtn;
         Graph graph;
+        BackButton backBtn;
         enum class IsActive
         {
             None,
@@ -30,6 +32,7 @@ namespace Screen
         bool isDijkstraAnimation = false;
         bool hasDijkstraStared = false;
         bool drawPath = false;
+        bool isRunning;
 
     private:
         void processEvents(sf::Event &event)
@@ -63,6 +66,12 @@ namespace Screen
                                 else
                                     activeBtn = IsActive::None;
                             }
+                        }
+                        else if (backBtn.checkIfClicked(event.mouseButton.x, event.mouseButton.y))
+                        {
+                            isRunning = false;
+                            graph.clear();
+                            isDijkstraAnimation = false;
                         }
                         else if (clearBtn.checkIfBtnClicked(event.mouseButton.x, event.mouseButton.y))
                         {
@@ -144,7 +153,8 @@ namespace Screen
         }
         void run()
         {
-            while (context.window.isOpen())
+            isRunning = true;
+            while (context.window.isOpen() && isRunning)
             {
                 sf::Event event;
                 if (isDijkstraAnimation)
@@ -158,6 +168,8 @@ namespace Screen
                         isDijkstraAnimation = false;
                 }
                 processEvents(event);
+                if (!isRunning)
+                    break;
                 renderWindow();
             }
         }
@@ -176,6 +188,7 @@ namespace Screen
             {
                 graph.draw(context.window, true, true, animateBtn.isActive, false);
             }
+            backBtn.draw(context.window);
             context.window.display();
         }
     };

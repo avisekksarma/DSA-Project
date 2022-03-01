@@ -10,6 +10,7 @@ class MainMenu
     Context &context;
     Button bfsDfsBtn;
     Button dijkstraBtn;
+    Button exitBtn;
     sf::Sprite headingSprite;
     sf::Texture headingTexture;
 
