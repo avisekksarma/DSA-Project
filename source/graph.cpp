@@ -10,7 +10,7 @@ Edge::Edge(Context &c, int id, int weight)
     weightText.setFont(c.getAssets().font1);
     weightText.setString(std::to_string(weight));
     weightText.setCharacterSize(30);
-    weightText.setFillColor(sf::Color::Red);
+    weightText.setFillColor(sf::Color::Green);
     weightText.setLetterSpacing(1.2);
     // position will be set later when drawing line.
 }
@@ -153,10 +153,26 @@ void Graph::resetAnimation()
         isVisited[i] = false;
         visited_node_list.clear();
     }
+    while (!queue.empty())
+    {
+        queue.pop();
+    }
+    while (!stack.empty())
+    {
+        stack.pop();
+    }
 }
 void Graph::resetAnimation(bool isDijkstra)
 {
     // for resetting dijkstra animation.
+    for (int i = 0; i < graph.size(); ++i)
+    {
+        graph[i].getGUIVertex().getCircle().setFillColor(sf::Color{0x14632EFF});
+        dValue[i] = 1000;
+        graph[i].shortestVal.setString("Inf");
+    }
+    dPrevious.clear();
+    dUnvisited.clear();
 }
 
 void Graph::addVertex(sf::Vector2f mousePos)
@@ -185,7 +201,6 @@ void Graph::draw(sf::RenderWindow &window, bool isAnimation)
             {
                 col = sf::Color::White;
             }
-
             drawLine(graph[i].getGUIVertex().getCircle().getPosition(), graph[getIndexFromID(it->id)].getGUIVertex().getCircle().getPosition(), window, col);
         }
     }
@@ -195,7 +210,7 @@ void Graph::draw(sf::RenderWindow &window, bool isAnimation)
     }
 }
 
-void Graph::draw(sf::RenderWindow &window, bool drawWeight, bool isDijkstra)
+void Graph::draw(sf::RenderWindow &window, bool drawWeight, bool isDijkstra, bool isAnimateBtnActive, bool isShortestPath)
 {
     for (int i = 0; i < graph.size(); ++i)
     {
@@ -204,10 +219,27 @@ void Graph::draw(sf::RenderWindow &window, bool drawWeight, bool isDijkstra)
         {
             sf::Vector2f end1 = graph[i].getGUIVertex().getCircle().getPosition();
             sf::Vector2f end2 = graph[getIndexFromID(it->id)].getGUIVertex().getCircle().getPosition();
-            drawLine(end1, end2, window, sf::Color::White);
+            if (!isShortestPath)
+            {
+                drawLine(end1, end2, window, sf::Color::White);
+            }
+            else
+            {
+                auto line = std::vector<int>({graph[i].getID(), it->id});
+                auto x = std::find(shortestPath.begin(), shortestPath.end(), line);
+                if (x != shortestPath.end())
+                {
+                    // this is one line in the path.
+                    drawLine(end1, end2, window, sf::Color::Blue);
+                }
+                else
+                {
+                    drawLine(end1, end2, window, sf::Color::White);
+                }
+            }
             if (drawWeight)
             {
-                it->weightText.setPosition((end1.x + end2.x + 25) / 2.0f, (end1.y + end2.y) / 2.0f);
+                it->weightText.setPosition((end1.x + end2.x) / 2.0f + 20, (end1.y + end2.y) / 2.0f);
                 it->weightText.setOrigin(it->weightText.getGlobalBounds().width / 2.0f, it->weightText.getGlobalBounds().height / 2.0f);
                 context.window.draw(it->weightText);
             }
@@ -216,7 +248,10 @@ void Graph::draw(sf::RenderWindow &window, bool drawWeight, bool isDijkstra)
     for (int i = 0; i < graph.size(); ++i)
     {
         graph[i].getGUIVertex().draw(window);
-        window.draw(graph[i].shortestVal);
+        if (isAnimateBtnActive)
+        {
+            window.draw(graph[i].shortestVal);
+        }
     }
 }
 
@@ -442,7 +477,11 @@ void Graph::Dijkstra(bool isFirstNode, int startID)
     if (isFirstNode)
     {
         int index = getIndexFromID(startID);
-        dValue.resize(graph.size(), 1000);
+        if (dValue.size() != graph.size())
+        {
+            // for very first animation where dvalue size is 0.
+            dValue.resize(graph.size(), 1000);
+        }
         dValue[index] = 0;
         dPrevious.resize(graph.size(), -1);
         dPrevious[index] = startID; // for starting node;
@@ -450,11 +489,8 @@ void Graph::Dijkstra(bool isFirstNode, int startID)
         {
             dUnvisited.push_back(graph[i].getID()); // pushing index not id
             // setting upper text in each vertices.
-            if (dValue[i] == 1000)
-                graph[i].shortestVal.setString("Inf");
-            else
-                graph[i].shortestVal.setString(std::to_string(dValue[i]));
         }
+        graph[index].shortestVal.setString("0");
     }
 
     int indexInUnvisited;
@@ -508,4 +544,27 @@ int Graph::findMinID(int &index)
         }
     }
     return minID;
+}
+
+void Graph::setColorPath(int currID)
+{
+    // initially currID is clicked ID
+    shortestPath.clear();
+    while (true)
+    {
+        auto nextID = getNextVertexID(currID);
+        if (nextID == currID)
+        {
+            break;
+        }
+        shortestPath.push_back({nextID, currID});
+        shortestPath.push_back({currID, nextID});
+        //TODO: check if this pushback works for {a,b} form
+        currID = nextID;
+    }
+}
+int Graph::getNextVertexID(int nowVertexID)
+{
+    auto nowIndex = getIndexFromID(nowVertexID);
+    return dPrevious[nowIndex];
 }

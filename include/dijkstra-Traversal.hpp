@@ -28,6 +28,8 @@ namespace Screen
         };
         IsActive activeBtn = IsActive::None;
         bool isDijkstraAnimation = false;
+        bool hasDijkstraStared = false;
+        bool drawPath = false;
 
     private:
         void processEvents(sf::Event &event)
@@ -83,9 +85,16 @@ namespace Screen
                                 }
                                 animateBtn.manageBtnState();
                                 if (animateBtn.isActive)
+                                {
                                     activeBtn = IsActive::animateBtn;
+                                }
                                 else
+                                {
+                                    drawPath = false;
+                                    hasDijkstraStared = false;
                                     activeBtn = IsActive::None;
+                                }
+
                                 // isBFSAnimation = false;
                                 // isDFSAnimation = false;
                             }
@@ -101,12 +110,23 @@ namespace Screen
                         }
                         else if (animateBtn.isActive)
                         {
+
                             int id;
                             id = graph.containsVertex(sf::Vector2f(event.mouseButton.x, event.mouseButton.y));
-                            if (id >= 0)
+                            if (!hasDijkstraStared)
                             {
-                                graph.Dijkstra(true, id);
-                                isDijkstraAnimation = true;
+                                if (id >= 0)
+                                {
+                                    graph.Dijkstra(true, id);
+                                    isDijkstraAnimation = true;
+                                    hasDijkstraStared = true;
+                                }
+                            }
+                            else
+                            {
+                                // case for clicking after animation has finished ( for knowing path of a vertex )
+                                drawPath = true;
+                                graph.setColorPath(id);
                             }
                         }
                     }
@@ -148,7 +168,14 @@ namespace Screen
             addEdgeBtn.draw(context.window);
             clearBtn.draw(context.window);
             animateBtn.draw(context.window);
-            graph.draw(context.window, true, true);
+            if (drawPath)
+            {
+                graph.draw(context.window, true, true, animateBtn.isActive, true);
+            }
+            else
+            {
+                graph.draw(context.window, true, true, animateBtn.isActive, false);
+            }
             context.window.display();
         }
     };

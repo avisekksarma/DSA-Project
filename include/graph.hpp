@@ -56,6 +56,8 @@ private:
   std::vector<bool> isVisited;
   std::vector<int> dValue;    // always graph.size
   std::vector<int> dPrevious; // always graph.size
+  std::vector<std::vector<int>> shortestPath;
+
 public:
   std::vector<int> dUnvisited; // first graph.size then to 0 finally
   std::queue<int> queue;
@@ -80,7 +82,7 @@ public:
   void resetAnimation(bool isDijkstra);
 
   void addVertex(sf::Vector2f mousePos);
-  void draw(sf::RenderWindow &window, bool drawWeight, bool isDijkstra);
+  void draw(sf::RenderWindow &window, bool drawWeight, bool isDijkstra, bool isAnimateBtnActive, bool isShortestPath);
   void drawLine(sf::Vector2f end1, sf::Vector2f end2, sf::RenderWindow &window, sf::Color col);
   void clearEdgeVector();
   void clear();
@@ -93,4 +95,6 @@ public:
   void BFS(sf::Text &visited_node_order, bool isFirstNode = false, int id = 0);
   void DFS(sf::Text &visited_node_order, bool isFirstNode = false, int id = 0);
   void draw(sf::RenderWindow &window, bool isAnimation);
+  void setColorPath(int currID);
+  int getNextVertexID(int nowVertexID);
 };
