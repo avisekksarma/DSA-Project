@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include "entities.hpp"
 #include "graph.hpp"
+#include "backButton.hpp"
 #include <chrono>
 #include <thread>
 
@@ -21,6 +22,9 @@ namespace Screen
         Button dfsBtn;
         Button pauseBtn;
         Button deleteBtn;
+        BackButton backBtn;
+        bool isRunning;
+
         sf::Text visited_node_order;
         Graph graph;
 
@@ -78,6 +82,16 @@ namespace Screen
                                 else
                                     activeBtn = IsActive::None;
                             }
+                        }
+                        else if (backBtn.checkIfClicked(event.mouseButton.x, event.mouseButton.y))
+                        {
+                          isRunning = false;
+                          graph.clear();
+                          isBFSAnimation = false;
+                          isDFSAnimation = false;
+                          /* graph.resetAnimation(); */
+                          /* graph.clear(); */
+                          //go to main menu;
                         }
                         else if (deleteBtn.checkIfBtnClicked(event.mouseButton.x, event.mouseButton.y))
                         {
@@ -211,7 +225,8 @@ namespace Screen
         }
         void run()
         {
-            while (context.window.isOpen())
+            isRunning = true;
+            while (context.window.isOpen() && isRunning)
             {
                 sf::Event event;
                 if (isBFSAnimation)
@@ -233,6 +248,8 @@ namespace Screen
                         isDFSAnimation = false;
                 }
                 processEvents(event);
+                if(!isRunning)
+                  break;
                 renderWindow();
             }
         }
@@ -249,6 +266,7 @@ namespace Screen
             clearBtn.draw(context.window);
             bfsBtn.draw(context.window);
             dfsBtn.draw(context.window);
+            backBtn.draw(context.window);
             context.window.draw(visited_node_order);
             if(isBFSAnimation || isDFSAnimation)
             {

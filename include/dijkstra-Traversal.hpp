@@ -6,6 +6,7 @@
 #include "graph.hpp"
 #include <chrono>
 #include <thread>
+#include "backButton.hpp"
 
 namespace Screen
 {
@@ -19,6 +20,7 @@ namespace Screen
         Button clearBtn;
         Button animateBtn;
         Graph graph;
+        BackButton backBtn;
         enum class IsActive
         {
             None,
@@ -28,6 +30,7 @@ namespace Screen
         };
         IsActive activeBtn = IsActive::None;
         bool isDijkstraAnimation = false;
+        bool isRunning;
 
     private:
         void processEvents(sf::Event &event)
@@ -61,6 +64,12 @@ namespace Screen
                                 else
                                     activeBtn = IsActive::None;
                             }
+                        }
+                        else if (backBtn.checkIfClicked(event.mouseButton.x, event.mouseButton.y))
+                        {
+                          isRunning = false;
+                          graph.clear();
+                          isDijkstraAnimation = false;
                         }
                         else if (clearBtn.checkIfBtnClicked(event.mouseButton.x, event.mouseButton.y))
                         {
@@ -124,7 +133,8 @@ namespace Screen
         }
         void run()
         {
-            while (context.window.isOpen())
+            isRunning = true;
+            while (context.window.isOpen() && isRunning)
             {
                 sf::Event event;
                 if (isDijkstraAnimation)
@@ -138,6 +148,8 @@ namespace Screen
                         isDijkstraAnimation = false;
                 }
                 processEvents(event);
+                if(!isRunning)
+                  break;
                 renderWindow();
             }
         }
@@ -148,6 +160,7 @@ namespace Screen
             addEdgeBtn.draw(context.window);
             clearBtn.draw(context.window);
             animateBtn.draw(context.window);
+            backBtn.draw(context.window);
             graph.draw(context.window, true, true);
             context.window.display();
         }
