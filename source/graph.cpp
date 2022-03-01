@@ -9,8 +9,9 @@ Edge::Edge(Context &c, int id, int weight)
     this->weight = weight;
     weightText.setFont(c.getAssets().font1);
     weightText.setString(std::to_string(weight));
-    weightText.setCharacterSize(25);
+    weightText.setCharacterSize(30);
     weightText.setFillColor(sf::Color::Red);
+    weightText.setLetterSpacing(1.2);
     // position will be set later when drawing line.
 }
 
@@ -206,7 +207,7 @@ void Graph::draw(sf::RenderWindow &window, bool drawWeight, bool isDijkstra)
             drawLine(end1, end2, window, sf::Color::White);
             if (drawWeight)
             {
-                it->weightText.setPosition((end1.x + end2.x) / 2.0f, (end1.y + end2.y) / 2.0f);
+                it->weightText.setPosition((end1.x + end2.x + 25) / 2.0f, (end1.y + end2.y) / 2.0f);
                 it->weightText.setOrigin(it->weightText.getGlobalBounds().width / 2.0f, it->weightText.getGlobalBounds().height / 2.0f);
                 context.window.draw(it->weightText);
             }

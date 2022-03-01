@@ -143,7 +143,7 @@ namespace Screen
         }
         void renderWindow()
         {
-            context.window.clear();
+            context.window.clear(sf::Color{0x16191EFF});
             addVertexBtn.draw(context.window);
             addEdgeBtn.draw(context.window);
             clearBtn.draw(context.window);
