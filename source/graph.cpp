@@ -52,6 +52,10 @@ GUI::Vertex &Vertex::getGUIVertex()
 
 int Vertex::count = 0;
 // ---------------Graph Class------------------
+
+Graph::Graph(Context &c) : context(c)
+{
+}
 bool Graph::isThisIDValid(int ID)
 {
     for (int i = 0; i < graph.size(); ++i)
@@ -88,9 +92,6 @@ int Graph::getIndexFromID(int ID)
     return -1;
 }
 
-Graph::Graph(Context &c) : context(c)
-{
-}
 void Graph::addEdge(sf::Vector2f mousePos)
 {
     //TODO: may be time efficiency in operations after storing index rather than id
@@ -165,9 +166,10 @@ void Graph::addVertex(sf::Vector2f mousePos)
     }
 }
 
-void draw(sf::RenderWindow &window, bool isAnimation)
+void Graph::draw(sf::RenderWindow &window, bool isAnimation)
 {
     sf::Color col = sf::Color::White;
+    auto x = graph;
     for (int i = 0; i < graph.size(); ++i)
     {
         auto it = graph[i].edgeList.begin();
@@ -201,7 +203,7 @@ void Graph::draw(sf::RenderWindow &window, bool drawWeight, bool isDijkstra)
         {
             sf::Vector2f end1 = graph[i].getGUIVertex().getCircle().getPosition();
             sf::Vector2f end2 = graph[getIndexFromID(it->id)].getGUIVertex().getCircle().getPosition();
-            drawLine(end1, end2, window);
+            drawLine(end1, end2, window, sf::Color::White);
             if (drawWeight)
             {
                 it->weightText.setPosition((end1.x + end2.x) / 2.0f, (end1.y + end2.y) / 2.0f);
@@ -217,7 +219,7 @@ void Graph::draw(sf::RenderWindow &window, bool drawWeight, bool isDijkstra)
     }
 }
 
-void drawLine(sf::Vector2f end1, sf::Vector2f end2, sf::RenderWindow &window, sf::Color col)
+void Graph::drawLine(sf::Vector2f end1, sf::Vector2f end2, sf::RenderWindow &window, sf::Color col)
 {
     float length = sqrt(pow((end1.x - end2.x), 2) + pow((end1.y - end2.y), 2));
     sf::RectangleShape line(sf::Vector2f(length, 2.0f));
@@ -294,7 +296,7 @@ int Graph::containsVertex(sf::Vector2f pos)
     }
     return id;
 }
-void Graph::BFS(sf::Text &visited_node_order, bool isFirstNode = false, int id = 0)
+void Graph::BFS(sf::Text &visited_node_order, bool isFirstNode, int id)
 {
     std::cout << "BFS start" << std::endl;
     if (isFirstNode)
@@ -346,7 +348,7 @@ bool Graph::containIntheRange(sf::Vector2f mousePos)
     return false;
 }
 
-void Graph::DFS(sf::Text &visited_node_order, bool isFirstNode = false, int id = 0)
+void Graph::DFS(sf::Text &visited_node_order, bool isFirstNode, int id)
 {
     std::cout << "DFS start" << std::endl;
     if (isFirstNode)

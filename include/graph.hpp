@@ -70,20 +70,6 @@ private:
 public:
   Graph(Context &c);
   // TODO: manage index and ID confusion here.
-  // bool isVertexAdjacent(int source, int checkVertex)
-  // {
-  //     // index of say vertices A and B are given, i need to say if they are adjacent i.e. connected.
-  //     if (isThisIDValid(source) and isThisIDValid(checkVertex))
-  //     {
-  //         auto it = graph[source].edgeList.begin();
-  //         for (; it != graph[source].edgeList.end(); ++it)
-  //         {
-  //             if (it->id == checkVertex)
-  //                 return true;
-  //         }
-  //         return false;
-  //     }
-  // }
   // adds a edge if that edge does not exist yet otherwise does nothing.
   void addEdge(sf::Vector2f mousePos);
   void printGraph();
